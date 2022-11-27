@@ -29,18 +29,11 @@ const GeneratePasswordModal = ({ isOpen, handleClose, currentState, updateFormSt
 
   const generateNewPassword = () => {
     const pwd = generateRandomString(18);
-    console.log(`New password is => ${pwd}`);
     setNewPwd(pwd);
   }
 
   const handlePwdAccept = () => {
-    let update = currentState;
-    update.password = newPwd;
-
-    updateFormState(currentState => ({
-      ...currentState,
-      ...update
-    }));
+    currentState.password = newPwd;
   }
 
 

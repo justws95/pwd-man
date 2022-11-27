@@ -29,6 +29,7 @@ const AddForm = (props) => {
     password: '',
     alternateName: '',
   });
+  const [pwdHidden, setPwdHidden] = useState(true);
 
   const handlePwdModalOpen = () => seOpenPwdGenModal(true);
   const handlePwdModalClose = () => seOpenPwdGenModal(false);
@@ -53,20 +54,10 @@ const AddForm = (props) => {
     }));
   };
 
-  const handlePasswordInputChange = (e) => {
+  const handlePasswordInputChange = (event) => {
     let update = formFields;
-    let newPwd = '';
-
-    console.log(`Here is e ---> ${e}`);
-
-    if (String(e) === e) {
-      newPwd = e;
-    } else {
-      newPwd = e.target.value;
-    }
-
-    update.password = newPwd;
-
+    update.password = event.target.value;
+    
     setFormFields(formFields => ({
       ...formFields,
       ...update
@@ -102,6 +93,7 @@ const AddForm = (props) => {
                   id='outlined-required'
                   label='Site'
                   placeholder='Site'
+                  value={formFields.site}
                   onChange={handleSiteInputChange}
                 />
                 <TextField
@@ -110,13 +102,15 @@ const AddForm = (props) => {
                   label='User ID'
                   placeholder='User ID'
                   helperText='User ID for this record'
+                  value={formFields.userId}
                   onChange={handleUserIdInputChange}
                 />
                 <TextField
                   required
                   id='outlined-password-input'
                   label="Password"
-                  type="password"
+                  type={pwdHidden ? "password" : "text"}
+                  value={formFields.password}
                   onChange={handlePasswordInputChange}
                 />
                 <TextField
@@ -124,6 +118,7 @@ const AddForm = (props) => {
                   label='Alternate Name'
                   placeholder='Alternate Name'
                   helperText='Alternate Name'
+                  value={formFields.alternateName}
                   onChange={handleAlternateNameInputChange}
                 />
               </div>
