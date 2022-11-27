@@ -53,9 +53,19 @@ const AddForm = (props) => {
     }));
   };
 
-  const handlePasswordInputChange = (event) => {
+  const handlePasswordInputChange = (e) => {
     let update = formFields;
-    update.password = event.target.value;
+    let newPwd = '';
+
+    console.log(`Here is e ---> ${e}`);
+
+    if (String(e) === e) {
+      newPwd = e;
+    } else {
+      newPwd = e.target.value;
+    }
+
+    update.password = newPwd;
 
     setFormFields(formFields => ({
       ...formFields,

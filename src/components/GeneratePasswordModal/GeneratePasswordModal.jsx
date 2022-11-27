@@ -25,9 +25,22 @@ const style = {
 
 
 const GeneratePasswordModal = ({ isOpen, handleClose, currentState, updateFormState }) => {
+  const [newPwd, setNewPwd] = useState(null);
+
   const generateNewPassword = () => {
-    const newPwd = generateRandomString(18);
-    console.log(`New password is => ${newPwd}`);
+    const pwd = generateRandomString(18);
+    console.log(`New password is => ${pwd}`);
+    setNewPwd(pwd);
+  }
+
+  const handlePwdAccept = () => {
+    let update = currentState;
+    update.password = newPwd;
+
+    updateFormState(currentState => ({
+      ...currentState,
+      ...update
+    }));
   }
 
 
@@ -39,27 +52,46 @@ const GeneratePasswordModal = ({ isOpen, handleClose, currentState, updateFormSt
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Typography id="modal-modal-title" variant="h4" component="h2">
             Choose Password Options
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            {newPwd}
           </Typography>
           <Stack sx={{top: '50%',left: '50%', padding: '10px'}} direction="row">
             <Button 
               variant="text" 
               color="error"
-              onClick={handleClose}
+              sx={{padding: '5px'}}
+              onClick={() => {
+                setNewPwd(null);
+                handleClose();
+              }}
             >
               Close
             </Button>
             <Button 
               variant="text" 
               color="primary"
+              sx={{padding: '5px'}}
               onClick={generateNewPassword}
             >
-              Generate
+              {newPwd === null ? 'Generate' : 'Regenerate'}
             </Button>
+            {newPwd != null &&
+              <Button 
+                variant="text" 
+                color="success"
+                sx={{padding: '5px'}}
+                onClick={() => {
+                  handlePwdAccept();
+                  handleClose();
+                }}
+              >
+                Use this password
+              </Button>
+
+            }
           </Stack>
         </Box>
       </Modal>

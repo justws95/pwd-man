@@ -1,7 +1,6 @@
-import { store } from '../../utils';
 import { collection, getDocs } from 'firebase/firestore/lite';
 
-export const getStoredRecords = async () => {
+export const getStoredRecords = async (store) => {
   const db = store;
 
   const recordsCol = collection(db, 'records');

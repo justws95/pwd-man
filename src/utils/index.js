@@ -1,1 +1,1 @@
-export { store } from './firebaseUtils';
+export { getFirebaseApp, getStore } from './firebaseUtils';
