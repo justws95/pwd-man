@@ -1,8 +1,19 @@
 import React from 'react';
+import AddForm from './AddForm';
+import StoredPasswordsTable from './StoredPasswordsTable';
 
-const App = () => {
+import { store } from '../utils';
+import {collection, addDoc, Timestamp} from 'firebase/firestore';
+
+
+
+
+
+const App = (props) => {
   return (
-    <h1>This is the landing page!!!</h1>
+    <React.Fragment>
+      <AddForm />
+    </React.Fragment>
   );
 }
 
