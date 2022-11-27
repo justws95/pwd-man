@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import Modal from '@mui/material/Modal';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';

@@ -9,6 +9,14 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -29,49 +37,125 @@ const AddForm = (props) => {
     password: '',
     alternateName: '',
   });
+  const [formFieldsPristineState, setFormFieldsPristineState] = useState({
+    site: true,
+    userId: true,
+    password: true,
+    alternateName: true,
+  });
   const [pwdHidden, setPwdHidden] = useState(true);
 
   const handlePwdModalOpen = () => seOpenPwdGenModal(true);
   const handlePwdModalClose = () => seOpenPwdGenModal(false);
 
+  const handleClickShowPassword = () => {
+    setPwdHidden(!pwdHidden);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const checkSubmitReadyAndSet = () => {
+    const ff = formFields;
+
+    if (ff.site.length > 0 && ff.userId.length > 0 && ff.password.length > 0) {
+      setSubmitReady(true);
+    } else {
+      setSubmitReady(false);
+    }
+  }
+
   const handleSiteInputChange = (event) => {
     let update = formFields;
     update.site = event.target.value;
+
+    let updatePristineState = formFieldsPristineState;
+
+    if (formFieldsPristineState.site === true) {
+      updatePristineState.site = false;
+    }
 
     setFormFields(formFields => ({
       ...formFields,
       ...update
     }));
+
+    setFormFieldsPristineState(formFieldsPristineState => ({
+      ...formFieldsPristineState,
+      ...updatePristineState
+    }));
+
+    checkSubmitReadyAndSet();
   };
 
   const handleUserIdInputChange = (event) => {
     let update = formFields;
     update.userId = event.target.value;
 
+    let updatePristineState = formFieldsPristineState;
+
+    if (formFieldsPristineState.userId === true) {
+      updatePristineState.userId = false;
+    }
+
     setFormFields(formFields => ({
       ...formFields,
       ...update
     }));
+
+    setFormFieldsPristineState(formFieldsPristineState => ({
+      ...formFieldsPristineState,
+      ...updatePristineState
+    }));
+
+    checkSubmitReadyAndSet();
   };
 
   const handlePasswordInputChange = (event) => {
     let update = formFields;
     update.password = event.target.value;
+
+    let updatePristineState = formFieldsPristineState;
+
+    if (formFieldsPristineState.password === true) {
+      updatePristineState.password = false;
+    }
     
     setFormFields(formFields => ({
       ...formFields,
       ...update
     }));
+
+    setFormFieldsPristineState(formFieldsPristineState => ({
+      ...formFieldsPristineState,
+      ...updatePristineState
+    }));
+
+    checkSubmitReadyAndSet();
   };
 
   const handleAlternateNameInputChange = (event) => {
     let update = formFields;
     update.alternateName = event.target.value;
 
+    let updatePristineState = formFieldsPristineState;
+
+    if (formFieldsPristineState.alternateName === true) {
+      updatePristineState.alternateName = false;
+    }
+
     setFormFields(formFields => ({
       ...formFields,
       ...update
     }));
+
+    setFormFieldsPristineState(formFieldsPristineState => ({
+      ...formFieldsPristineState,
+      ...updatePristineState
+    }));
+
+    checkSubmitReadyAndSet();
   };
 
   return (
@@ -95,29 +179,60 @@ const AddForm = (props) => {
                   placeholder='Site'
                   value={formFields.site}
                   onChange={handleSiteInputChange}
+                  error={formFields.site.length <= 0 && formFieldsPristineState.site === false}
+                  helperText={formFields.site.length <= 0 && formFieldsPristineState.site === false ? 'Site is required.' : null}
                 />
                 <TextField
                   required
                   id='outlined'
                   label='User ID'
                   placeholder='User ID'
-                  helperText='User ID for this record'
                   value={formFields.userId}
                   onChange={handleUserIdInputChange}
+                  error={formFields.userId.length <= 0 && formFieldsPristineState.userId === false}
+                  helperText={formFields.userId.length <= 0 && formFieldsPristineState.userId === false ? 'User ID is required.' : null}
                 />
-                <TextField
-                  required
-                  id='outlined-password-input'
-                  label="Password"
-                  type={pwdHidden ? "password" : "text"}
-                  value={formFields.password}
-                  onChange={handlePasswordInputChange}
-                />
+                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                  <InputLabel
+                    required
+                    htmlFor="outlined-adornment-password"
+                    error={formFields.password.length <= 0 && formFieldsPristineState.password === false}
+                  >
+                    Password
+                  </InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-password"
+                    type={pwdHidden ? "password" : "text"}
+                    value={formFields.password}
+                    onChange={handlePasswordInputChange}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {pwdHidden  ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password"
+                  />
+                  <FormHelperText 
+                    id="filled-weight-helper-text"
+                    error={formFields.password.length <= 0 && formFieldsPristineState.password === false}
+                  >
+                    {
+                      formFields.password.length <= 0 && formFieldsPristineState.password === false ? 'Password is required.' : null
+                    }
+                  </FormHelperText>
+                </FormControl>
                 <TextField
                   id='outlined'
                   label='Alternate Name'
                   placeholder='Alternate Name'
-                  helperText='Alternate Name'
+                  helperText='Nickname for this record'
                   value={formFields.alternateName}
                   onChange={handleAlternateNameInputChange}
                 />
