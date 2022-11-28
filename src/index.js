@@ -1,19 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 
 import App from './components/App';
-import { getFirebaseApp, getStore } from './utils';
 import reportWebVitals from './reportWebVitals';
 
-const app = getFirebaseApp();
-const store = getStore(app);
+import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <App app = {app} store={store}/>
+    <App />
   </React.StrictMode>
 );
 

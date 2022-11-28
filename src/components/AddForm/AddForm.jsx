@@ -18,6 +18,8 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+import { addNewPassword } from './utils';
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -28,7 +30,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-const AddForm = (props) => {
+const AddForm = () => {
   const [submitReady, setSubmitReady] = useState(false);
   const [pwdGenModalIsOpen, seOpenPwdGenModal] = useState(false);
   const [formFields, setFormFields] = useState({
@@ -155,8 +157,13 @@ const AddForm = (props) => {
       ...updatePristineState
     }));
 
-    checkSubmitReadyAndSet();
+    /*checkSubmitReadyAndSet();*/
   };
+
+  const handleSubmit = () => {
+    console.log(`JSON to be submitted => ${JSON.stringify(formFields)}`);
+    const success = addNewPassword(formFields);
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -252,12 +259,12 @@ const AddForm = (props) => {
                 isOpen={pwdGenModalIsOpen} 
                 handleClose={handlePwdModalClose}
                 currentState={formFields}
-                updateFormState={handlePasswordInputChange}
               />
               <Button 
                 color="success" 
                 variant="outlined"
                 disabled={!submitReady}
+                onClick={handleSubmit}
               >
                 Submit
               </Button>

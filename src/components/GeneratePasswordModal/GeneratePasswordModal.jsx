@@ -6,6 +6,9 @@ import Modal from '@mui/material/Modal';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
+import ModalMultiSelect from './ModalMultiSelect';
+import PasswordLengthSlider from './PasswordLengthSlider';
+
 import { generateRandomString } from './utils';
 
 
@@ -22,11 +25,13 @@ const style = {
 };
 
 
-const GeneratePasswordModal = ({ isOpen, handleClose, currentState, updateFormState }) => {
+const GeneratePasswordModal = ({ isOpen, handleClose, currentState }) => {
   const [newPwd, setNewPwd] = useState(null);
+  const [pwdOpts, setPwdOpts] = useState([]);
+  const [pwdRangeOpts, setPwdRangeOpts] = useState([]);
 
   const generateNewPassword = () => {
-    const pwd = generateRandomString(18);
+    const pwd = generateRandomString(pwdOpts, pwdRangeOpts);
     setNewPwd(pwd);
   }
 
@@ -34,6 +39,13 @@ const GeneratePasswordModal = ({ isOpen, handleClose, currentState, updateFormSt
     currentState.password = newPwd;
   }
 
+  const handlePwdOptsInChild = (opts) => {
+    setPwdOpts(opts);
+  }
+
+  const handlePwdRangeOptsInChild = (opts) => {
+    setPwdRangeOpts(opts);
+  }
 
   return (
     <Modal
@@ -46,6 +58,15 @@ const GeneratePasswordModal = ({ isOpen, handleClose, currentState, updateFormSt
           <Typography id="modal-modal-title" variant="h4" component="h2">
             Choose Password Options
           </Typography>
+          <div sx={{ padding: '2em' }}>
+            <ModalMultiSelect updateParentComponentState={handlePwdOptsInChild}/>
+          </div>
+          <div sx={{ padding: '2em', width: '80%' }}>
+            <Typography id="pwd-length-range-slider" gutterBottom>
+              Password Length Range
+            </Typography>
+            <PasswordLengthSlider updateParentComponentState={handlePwdRangeOptsInChild}/>
+          </div>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             {newPwd}
           </Typography>

@@ -1,11 +1,9 @@
 import React from 'react';
 import AddForm from './AddForm';
-import StoredPasswordsTable from './StoredPasswordsTable';
-
-import {collection, addDoc, Timestamp} from 'firebase/firestore';
+//import StoredPasswordsTable from './StoredPasswordsTable';
 
 
-const App = ({ app, store }) => {
+const App = () => {
   return (
     <React.Fragment>
       <AddForm />
