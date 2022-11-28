@@ -87,6 +87,7 @@ const GeneratePasswordModal = ({ isOpen, handleClose, currentState }) => {
               color="primary"
               sx={{padding: '5px'}}
               onClick={generateNewPassword}
+              disabled={pwdOpts.length <= 0 ? true : false}
             >
               {newPwd === null ? 'Generate' : 'Regenerate'}
             </Button>

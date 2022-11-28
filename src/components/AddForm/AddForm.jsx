@@ -18,6 +18,8 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+import * as urlRegex from 'url-regex';
+
 import { addNewPassword } from './utils';
 
 
@@ -46,6 +48,7 @@ const AddForm = () => {
     alternateName: true,
   });
   const [pwdHidden, setPwdHidden] = useState(true);
+  const [isValidSite, setIsValidSite] = useState(true);
 
   const handlePwdModalOpen = () => seOpenPwdGenModal(true);
   const handlePwdModalClose = () => seOpenPwdGenModal(false);
@@ -61,7 +64,7 @@ const AddForm = () => {
   const checkSubmitReadyAndSet = () => {
     const ff = formFields;
 
-    if (ff.site.length > 0 && ff.userId.length > 0 && ff.password.length > 0) {
+    if (ff.site.length > 0 && ff.userId.length > 0 && ff.password.length > 0 && isValidSite) {
       setSubmitReady(true);
     } else {
       setSubmitReady(false);
@@ -88,6 +91,9 @@ const AddForm = () => {
       ...updatePristineState
     }));
 
+    const isValidURL = urlRegex({exact: true, strict: false}).test(formFields.site);
+    setIsValidSite(isValidURL);
+    
     checkSubmitReadyAndSet();
   };
 
@@ -186,7 +192,7 @@ const AddForm = () => {
                   placeholder='Site'
                   value={formFields.site}
                   onChange={handleSiteInputChange}
-                  error={formFields.site.length <= 0 && formFieldsPristineState.site === false}
+                  error={(formFields.site.length <= 0 && formFieldsPristineState.site === false) || !isValidSite}
                   helperText={formFields.site.length <= 0 && formFieldsPristineState.site === false ? 'Site is required.' : null}
                 />
                 <TextField
