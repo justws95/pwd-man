@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getAuth } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -10,7 +12,6 @@ import ModalMultiSelect from './ModalMultiSelect';
 import PasswordLengthSlider from './PasswordLengthSlider';
 
 import { generateRandomString } from './utils';
-
 
 const style = {
   position: 'absolute',
@@ -26,6 +27,7 @@ const style = {
 
 
 const GeneratePasswordModal = ({ isOpen, handleClose, currentState }) => {
+  const navigate = useNavigate();
   const [newPwd, setNewPwd] = useState(null);
   const [pwdOpts, setPwdOpts] = useState([]);
   const [pwdRangeOpts, setPwdRangeOpts] = useState([]);
@@ -46,6 +48,14 @@ const GeneratePasswordModal = ({ isOpen, handleClose, currentState }) => {
   const handlePwdRangeOptsInChild = (opts) => {
     setPwdRangeOpts(opts);
   }
+
+  useEffect(() => {
+    const currentAuth = getAuth();
+
+    if (currentAuth.currentUser === null) {
+      navigate('/');
+    }
+  });
 
   return (
     <Modal
@@ -103,7 +113,6 @@ const GeneratePasswordModal = ({ isOpen, handleClose, currentState }) => {
               >
                 Use this password
               </Button>
-
             }
           </Stack>
         </Box>

@@ -24,10 +24,12 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { signUpUser } from './utils';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme();
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [formReady, setFormReady] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [pwdInput, setPwdInput] = useState('');
@@ -36,7 +38,8 @@ const SignUp = () => {
     event.preventDefault();
 
     if (pwdInput.length >= 8 && validator.validate(emailInput)) {
-      signUpUser(emailInput, pwdInput);
+      const callback = navigate;
+      signUpUser(emailInput, pwdInput, callback);
     }
   };
 

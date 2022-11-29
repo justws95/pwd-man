@@ -1,11 +1,12 @@
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-export const logUserIn = async (email, password) => {
+export const logUserIn = async (email, password, callback) => {
   const auth = getAuth();
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
       console.debug(`User has been signed in ${user.email}`);
+      callback('/home');
     })
     .catch((error) => {
       const errorCode = error.code;

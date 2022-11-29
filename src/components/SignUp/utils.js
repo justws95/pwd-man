@@ -1,13 +1,12 @@
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 
-export const signUpUser = (email, password) => {
+export const signUpUser = (email, password, callback) => {
   const auth = getAuth();
-
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      console.info(`Account for user [${user}] has been created!`);
+      callback('/');
     })
     .catch((error) => {
       const errorCode = error.code;

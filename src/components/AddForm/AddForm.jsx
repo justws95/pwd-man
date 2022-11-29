@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from "firebase/auth";
 import * as urlRegex from 'url-regex';
-import { Navigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
@@ -51,6 +51,7 @@ const AddForm = () => {
   });
   const [pwdHidden, setPwdHidden] = useState(true);
   const [isValidSite, setIsValidSite] = useState(true);
+  const navigate = useNavigate();
 
   const handlePwdModalOpen = () => seOpenPwdGenModal(true);
   const handlePwdModalClose = () => seOpenPwdGenModal(false);
@@ -171,6 +172,14 @@ const AddForm = () => {
   const handleSubmit = () => {
     const success = addNewPassword(formFields);
   }
+
+  useEffect(() => {
+    const currentAuth = getAuth();
+
+    if (currentAuth.currentUser == null) {
+      navigate('/');
+    }
+  });
 
 
   return (
