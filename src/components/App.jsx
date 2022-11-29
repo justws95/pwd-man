@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import firebase from 'firebase/compat/app';
+import * as firebaseui from 'firebaseui';
+import 'firebaseui/dist/firebaseui.css';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -9,10 +12,13 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
 import AddForm from './AddForm';
+import Login from './Login';
 import StoredPasswordsTable from './StoredPasswordsTable';
 
 
 const App = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+
   return (
     <React.Fragment>
       <Box sx={{ flexGrow: 1 }}>
@@ -31,7 +37,8 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/">
-            <Route index element={<StoredPasswordsTable />} />
+            <Route index element={<Login />} />
+            <Route path="home" element={<StoredPasswordsTable />} />
             <Route path="add" element={<AddForm />} />
           </Route>
         </Routes>
