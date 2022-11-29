@@ -23,6 +23,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import { logUserIn } from './utils';
+
 const theme = createTheme();
 
 const Login = () => {
@@ -32,6 +34,7 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    logUserIn(emailInput, pwdInput);
   };
 
   const handleEmailChange = (event) => {

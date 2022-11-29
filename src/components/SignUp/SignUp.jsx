@@ -23,6 +23,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import { signUpUser } from './utils';
+
 const theme = createTheme();
 
 const SignUp = () => {
@@ -33,7 +35,9 @@ const SignUp = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    console.log(`Email => ${emailInput}, PWD => ${pwdInput}`);
+    if (pwdInput.length >= 8 && validator.validate(emailInput)) {
+      signUpUser(emailInput, pwdInput);
+    }
   };
 
   const handleEmailChange = (event) => {
