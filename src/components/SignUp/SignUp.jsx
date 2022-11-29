@@ -1,10 +1,18 @@
-import * as React from 'react';
+/*
+  NOTE:
+
+  I did not write this code myself. This code was borrowed and modified
+  from the provided Material UI templates available at https://mui.com/material-ui/getting-started/templates/.
+  The repo link for this template is 
+  https://github.com/mui/material-ui/tree/v5.10.16/docs/data/material/getting-started/templates/sign-up.
+
+  This code is being used with the permission of the template provider.
+*/
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
