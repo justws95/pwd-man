@@ -15,6 +15,8 @@ import { useNavigate } from 'react-router-dom';
 
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -34,13 +36,20 @@ const Login = () => {
   const [formReady, setFormReady] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [pwdInput, setPwdInput] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showErrorMsg, setShowErrorMsg] = useState(false);
   const navigate = useNavigate();
 
+  const handleErrorMsg = (msg) => {
+    setErrorMsg(msg);
+    setShowErrorMsg(true);
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const callback = navigate;
-    logUserIn(emailInput, pwdInput, callback);
+    const errorCallback = handleErrorMsg;
+    logUserIn(emailInput, pwdInput, callback, errorCallback);
   };
 
   const handleEmailChange = (event) => {
@@ -77,65 +86,75 @@ const Login = () => {
   });
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
+    <React.Fragment>
+      {showErrorMsg &&
+        <Alert 
+          severity="error"
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoFocus
-              onChange={handleEmailChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              helperText="Password must be at least 8 characters"
-              onChange={handlePwdChange}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={!formReady}
-            >
-              Sign In
-            </Button>
-            <Grid container justifyContent="center">
-              <Grid item>
-                <Link href="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
+          <AlertTitle>Error</AlertTitle>
+          <strong>{errorMsg}</strong>
+        </Alert>
+      }
+      <ThemeProvider theme={theme}>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoFocus
+                onChange={handleEmailChange}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                helperText="Password must be at least 8 characters"
+                onChange={handlePwdChange}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled={!formReady}
+              >
+                Sign In
+              </Button>
+              <Grid container justifyContent="center">
+                <Grid item>
+                  <Link href="/signup" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+        </Container>
+      </ThemeProvider>
+    </React.Fragment>
   );
 }
 

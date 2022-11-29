@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { getAuth } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
 
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
@@ -24,6 +26,7 @@ const StoredPasswordsTable = () => {
   const [showPassword, setShowPassword] = useState({});
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [deletedRecord, setDeletedRecord] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     getStoredRecords().then((data) => {
@@ -39,6 +42,18 @@ const StoredPasswordsTable = () => {
       setErrorFetching(true);
     })
   }, []);
+
+  useEffect(() => {
+    const currentAuth = getAuth();
+
+    if (currentAuth != null) {
+      const user = currentAuth.currentUser;
+
+      if (!user) {
+        navigate('/');
+      }
+    }
+  });
 
   const handleMouseDown = (event) => {
     event.preventDefault();

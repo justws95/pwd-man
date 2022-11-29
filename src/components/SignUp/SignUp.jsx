@@ -35,7 +35,7 @@ const SignUp = () => {
   const [formReady, setFormReady] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [pwdInput, setPwdInput] = useState('');
-  const [errorMsg, setErrorMsg] = useState('Test');
+  const [errorMsg, setErrorMsg] = useState('');
   const [showErrorMsg, setShowErrorMsg] = useState(false);
 
   const handleErrorMsg = (msg) => {

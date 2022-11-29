@@ -1,6 +1,6 @@
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-export const logUserIn = async (email, password, callback) => {
+export const logUserIn = async (email, password, callback, errorCallback) => {
   const auth = getAuth();
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -12,5 +12,6 @@ export const logUserIn = async (email, password, callback) => {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.error(`Error occurred while logging user in. Error code ${errorCode} : ${errorMessage}`);
+      errorCallback(errorMessage);
     });
 }
