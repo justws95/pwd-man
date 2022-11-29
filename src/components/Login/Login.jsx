@@ -10,6 +10,9 @@
 */
 import React, { useState, useEffect } from 'react';
 import * as validator from 'email-validator';
+import { getAuth } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
+
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -31,10 +34,12 @@ const Login = () => {
   const [formReady, setFormReady] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [pwdInput, setPwdInput] = useState('');
+  const navigate = useNavigate();
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    logUserIn(emailInput, pwdInput);
+    const user = logUserIn(emailInput, pwdInput);
   };
 
   const handleEmailChange = (event) => {
@@ -47,6 +52,7 @@ const Login = () => {
     setPwdInput(event.target.value);
   }
 
+
   useEffect(() => {
     let valid = false;
     
@@ -57,6 +63,17 @@ const Login = () => {
     setFormReady(valid);
   }, [pwdInput, emailInput]);
 
+  useEffect(() => {
+    const currentAuth = getAuth();
+
+    if (currentAuth != null) {
+      const user = currentAuth.currentUser;
+
+      if (user) {
+        navigate('/home');
+      }
+    }
+  });
 
   return (
     <ThemeProvider theme={theme}>

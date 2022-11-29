@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import firebase from 'firebase/compat/app';
-import * as firebaseui from 'firebaseui';
-import 'firebaseui/dist/firebaseui.css';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Person2Icon from '@mui/icons-material/Person2';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -18,8 +17,6 @@ import StoredPasswordsTable from './StoredPasswordsTable';
 
 
 const App = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
-
   return (
     <React.Fragment>
       <Box sx={{ flexGrow: 1 }}>
@@ -31,6 +28,9 @@ const App = () => {
             <Stack direction="row">
               <Button color="inherit" href='/add'>Add Password</Button>
               <Button color="inherit" href='/'>Manage Passwords</Button>
+              <IconButton aria-label="account-mgmt">
+                <Person2Icon  />
+              </IconButton>
             </Stack>
           </Toolbar>
         </AppBar>
