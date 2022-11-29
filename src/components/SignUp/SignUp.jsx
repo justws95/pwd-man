@@ -8,7 +8,9 @@
 
   This code is being used with the permission of the template provider.
 */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import * as validator from 'email-validator';
+
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -24,14 +26,36 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const theme = createTheme();
 
 const SignUp = () => {
+  const [formReady, setFormReady] = useState(false);
+  const [emailInput, setEmailInput] = useState('');
+  const [pwdInput, setPwdInput] = useState('');
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    console.log(`Email => ${emailInput}, PWD => ${pwdInput}`);
   };
+
+  const handleEmailChange = (event) => {
+    event.preventDefault();
+    setEmailInput(event.target.value);
+  }
+
+  const handlePwdChange = (event) => {
+    event.preventDefault();
+    setPwdInput(event.target.value);
+  }
+
+  useEffect(() => {
+    let valid = false;
+    
+    if (pwdInput.length >= 8 && validator.validate(emailInput)) {
+      valid = true;
+    }
+
+    setFormReady(valid);
+  }, [pwdInput, emailInput]);
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -53,27 +77,6 @@ const SignUp = () => {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -81,7 +84,7 @@ const SignUp = () => {
                   id="email"
                   label="Email Address"
                   name="email"
-                  autoComplete="email"
+                  onChange={handleEmailChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -92,7 +95,7 @@ const SignUp = () => {
                   label="Password"
                   type="password"
                   id="password"
-                  autoComplete="new-password"
+                  onChange={handlePwdChange}
                 />
               </Grid>
             </Grid>
@@ -101,6 +104,7 @@ const SignUp = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={!formReady}
             >
               Sign Up
             </Button>

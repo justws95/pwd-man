@@ -9,6 +9,8 @@
   This code is being used with the permission of the template provider.
 */
 import React, { useState, useEffect } from 'react';
+import * as validator from 'email-validator';
+
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -21,8 +23,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import * as validator from 'email-validator';
-
 const theme = createTheme();
 
 const Login = () => {
@@ -32,13 +32,6 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    /*
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-    */
   };
 
   const handleEmailChange = (event) => {
@@ -51,7 +44,7 @@ const Login = () => {
     setPwdInput(event.target.value);
   }
 
-  useEffect((testValidity) => {
+  useEffect(() => {
     let valid = false;
     
     if (pwdInput.length >= 8 && validator.validate(emailInput)) {
