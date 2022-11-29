@@ -163,11 +163,10 @@ const AddForm = () => {
       ...updatePristineState
     }));
 
-    /*checkSubmitReadyAndSet();*/
+    checkSubmitReadyAndSet();
   };
 
   const handleSubmit = () => {
-    console.log(`JSON to be submitted => ${JSON.stringify(formFields)}`);
     const success = addNewPassword(formFields);
   }
 

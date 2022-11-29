@@ -1,11 +1,29 @@
-import { collection, getDocs } from 'firebase/firestore/lite';
+import { store } from '../../utils';
+import { 
+  collection, 
+  deleteDoc,
+  doc,
+  getDocs, 
+  updateDoc
+} from 'firebase/firestore';
 
-export const getStoredRecords = async (store) => {
+export const getStoredRecords = async () => {
   const db = store;
+  const records = [];
 
-  const recordsCol = collection(db, 'records');
-  const recordsSnapshot = await getDocs(recordsCol);
-  const recordsList = recordsSnapshot.docs.map(doc => doc.data());
+  const querySnapshot = await getDocs(collection(db, 'records'));
+  querySnapshot.forEach((doc) => {
+    let data = doc.data();
+    data['id'] = doc.id;
+    records.push(data); 
+  });
 
-  return recordsList;
+  return records;
+}
+
+export const deleteRecordEntry = async (id) => {
+  const db = store;
+  const taskDocRef = doc(db, 'records', id);
+  
+  await deleteDoc(taskDocRef);
 }
