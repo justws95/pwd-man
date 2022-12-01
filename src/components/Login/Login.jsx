@@ -74,16 +74,12 @@ const Login = () => {
   }, [pwdInput, emailInput]);
 
   useEffect(() => {
-    const currentAuth = getAuth();
+    const authToken = sessionStorage.getItem('Auth Token');
 
-    if (currentAuth != null) {
-      const user = currentAuth.currentUser;
-
-      if (user) {
-        navigate('/home');
-      }
+    if (authToken) {
+      navigate('/');
     }
-  });
+  }, []);
 
   return (
     <React.Fragment>

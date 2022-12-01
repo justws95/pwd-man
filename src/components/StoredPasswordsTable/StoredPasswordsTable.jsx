@@ -4,9 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import IconButton from '@mui/material/IconButton';
+import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -17,7 +21,21 @@ import Typography from '@mui/material/Typography';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+import LoadingAnimation from '../LoadingAnimation';
+
 import { getStoredRecords, deleteRecordEntry } from './utils';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '40%',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 
 const StoredPasswordsTable = () => {
@@ -26,95 +44,78 @@ const StoredPasswordsTable = () => {
   const [showPassword, setShowPassword] = useState({});
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [deletedRecord, setDeletedRecord] = useState('');
-  const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [recordToBeDeleted, setRecordToBeDeleted] = useState('');
 
-  useEffect(() => {
+  useEffect((showPassword) => {
     getStoredRecords().then((data) => {
       setRecords(data);
       setErrorFetching(false);
 
-      // set password visibility defaults
+      let updatePwdVis = showPassword;
+
       data.forEach((entry) => {
-        showPassword[`${entry.site}`] = false;
+        updatePwdVis[`${entry.site}`] = false;
       });
+
+      return updatePwdVis;     
+    }).then((updatePwdVis) => {
+      setShowPassword((showPassword) => ({
+        ...showPassword,
+        ...updatePwdVis
+      }));
     }).catch((error) => {
       console.error(`Error occurred while fetching stored records: ${error}`);
       setErrorFetching(true);
     })
   }, []);
 
-  useEffect(() => {
-    const currentAuth = getAuth();
+  const handleDeleteModalOpen = () => setShowDeleteModal(true);
 
-    if (currentAuth != null) {
-      const user = currentAuth.currentUser;
-
-      if (!user) {
-        navigate('/');
-      }
-    }
-  });
-
-  const handleMouseDown = (event) => {
+  const handleDeleteModalClose = (event) => {
     event.preventDefault();
-  };
-
-  const handleDelete = (site) => {
-    const entry = records.filter((r) => r.site === site)[0];
-
-    deleteRecordEntry(entry.id).then(() => {
-      setDeletedRecord(site);
-      setDeleteSuccess(true);
-    }).catch((error) => {
-      console.error(`Error occurred while deleting record: ${error}`);
-    });
-
+    setShowDeleteModal(false);
   }
 
-  const handlePasswordVisibility = (site) => {
+  const handleVisibilityToggle = (event, site) => {
+    event.preventDefault();
     let visibilityUpdate = showPassword;
     visibilityUpdate[site] = !showPassword[site];
 
-    setShowPassword(visibilityUpdate);
+    setShowPassword((showPassword) => ({
+      ...showPassword,
+      ...visibilityUpdate
+    }));
   }
 
-  const generateShowPasswordIcon = (site) => {
-    return (
-      <React.Fragment>
-        <TableCell align="right">
-          <IconButton 
-            aria-label="show-password"
-            onClick={(event) => { 
-              handleMouseDown(event);
-              handlePasswordVisibility(site);
-            }}
-          >
-            {
-              showPassword[site] ? <VisibilityOff /> : <Visibility />
-            }
-          </IconButton>
-        </TableCell>
-      </React.Fragment>
-    );
+  const handleDeleteClick = (event, site) => {
+    event.preventDefault();
+    setRecordToBeDeleted(site);
+    handleDeleteModalOpen();
   }
 
-  const generateRowDeleteIcon = (site) => {
-    return (
-      <React.Fragment>
-        <TableCell align="right">
-          <IconButton 
-            aria-label="delete"
-            onClick={(event) => { 
-              handleMouseDown(event);
-              handleDelete(site);
-            }}
-          >
-            <DeleteForeverIcon/>
-          </IconButton>
-        </TableCell>
-      </React.Fragment>
-    );
+  const handleConfirmDelete = (event) => {
+    event.preventDefault();
+    const entry = records.filter((r) => r.site === recordToBeDeleted)[0];
+
+    deleteRecordEntry(entry.id).then(() => {
+      setDeletedRecord(recordToBeDeleted);
+      setDeleteSuccess(true);
+      setRecordToBeDeleted('');
+    }).catch((error) => {
+      console.error(`Error occurred while deleting record: ${error}`);
+    });
   }
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authToken = sessionStorage.getItem('Auth Token');
+
+    if (!authToken) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
 
   return (
@@ -148,10 +149,7 @@ const StoredPasswordsTable = () => {
               <TableCell>Alternate Name</TableCell>
               <TableCell>User ID</TableCell>
               <TableCell>Password</TableCell>
-              {/*
-                <TableCell align="right">Show Password?</TableCell>
-                */
-              }
+              <TableCell align="right">Show Password?</TableCell>
               <TableCell align="right">Delete?</TableCell>
             </TableRow>
           </TableHead>
@@ -167,24 +165,68 @@ const StoredPasswordsTable = () => {
                 <TableCell>{row.alternateName || 'N/A'}</TableCell>
                 <TableCell>{row.userId}</TableCell>
                 <TableCell>
-                  {/*
-                    showPassword[row.site] ? row.password : '*************'
-                    */
-                    row.password
-                  }
+                  { showPassword[row.site] ? row.password : '*************' }
                 </TableCell>
-                {/*
-                  generateShowPasswordIcon(row.site)
-                  */
-                }
-                {
-                  generateRowDeleteIcon(row.site)
-                }
+                <TableCell align="right">
+                  <IconButton 
+                    aria-label="show-password"
+                    onClick={(event) => handleVisibilityToggle(event, row.site)}
+                  >
+                    {
+                      showPassword[row.site] ? <VisibilityOff /> : <Visibility />
+                    }
+                  </IconButton>
+                </TableCell>
+                <TableCell align="right">
+                  <IconButton 
+                    aria-label="delete"
+                    onClick={(event) => handleDeleteClick(event, row.site)}
+                  >
+                    <DeleteForeverIcon/>
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <Modal
+        open={showDeleteModal}
+        onClose={handleDeleteModalClose}
+        aria-labelledby="modal-pwd-gen"
+        aria-describedby="modal-pwd-gen"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h4" component="h2">
+            Are you sure?
+          </Typography>
+          <Typography id="spring-modal-description" sx={{ mt: 2 }}>
+            This cannot be undone.
+          </Typography>
+          <Stack 
+            sx={{top: '50%',left: '50%', paddingTop: '2em'}} 
+            direction="row"
+            spacing={12}
+          >
+            <Button 
+              variant="text" 
+              color="error"
+              sx={{padding: '5px'}}
+              onClick={(event) => handleDeleteModalClose(event)}
+            >
+              Close
+            </Button>
+            <Button 
+              variant="text" 
+              color="success"
+              sx={{padding: '5px'}}
+              onClick={(event) => handleConfirmDelete(event)}
+            >
+              Confirm Delete
+            </Button>
+          </Stack>
+        </Box>
+      </Modal>
     </React.Fragment>
   );
 }

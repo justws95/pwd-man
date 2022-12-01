@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getAuth } from "firebase/auth";
 import * as urlRegex from 'url-regex';
 import { useNavigate } from 'react-router-dom';
+
 
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import Grid from '@mui/material/Grid';
+import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -22,6 +23,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GeneratePasswordModal from '../GeneratePasswordModal';
 
 import { addNewPassword } from './utils';
+import { Typography } from '@mui/material';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -34,7 +36,6 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 const AddForm = () => {
-  const auth = getAuth();
   const [submitReady, setSubmitReady] = useState(false);
   const [pwdGenModalIsOpen, seOpenPwdGenModal] = useState(false);
   const [formFields, setFormFields] = useState({
@@ -51,7 +52,7 @@ const AddForm = () => {
   });
   const [pwdHidden, setPwdHidden] = useState(true);
   const [isValidSite, setIsValidSite] = useState(true);
-  const navigate = useNavigate();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handlePwdModalOpen = () => seOpenPwdGenModal(true);
   const handlePwdModalClose = () => seOpenPwdGenModal(false);
@@ -170,16 +171,23 @@ const AddForm = () => {
   };
 
   const handleSubmit = () => {
-    const success = addNewPassword(formFields);
+    addNewPassword(formFields, setShowSuccessModal);
   }
 
-  useEffect(() => {
-    const currentAuth = getAuth();
+  const handleModalClose = (event) => {
+    event.preventDefault();
+    setShowSuccessModal(false);
+  }
 
-    if (currentAuth.currentUser == null) {
-      navigate('/');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authToken = sessionStorage.getItem('Auth Token');
+
+    if (!authToken) {
+      navigate('/login');
     }
-  });
+  }, [navigate]);
 
 
   return (
@@ -291,6 +299,14 @@ const AddForm = () => {
           </Grid>
         </Grid>
       </Box>
+      <Modal
+        open={showSuccessModal}
+        onClose={(event) => handleModalClose(event)}
+        aria-labelledby="pwd-add-confirm-modal"
+        aria-describedby="pwd-add-confirm-modal"
+      >
+        <Typography>My name Jeff</Typography>
+      </Modal>
     </React.Fragment>
   );
 }

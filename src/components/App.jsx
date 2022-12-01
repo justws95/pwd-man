@@ -16,9 +16,9 @@ const App = () => {
         <HeaderBar />
         <Routes>
           <Route path="/">
-            <Route index element={<Login />} />
+            <Route index element={<StoredPasswordsTable />} />
+            <Route path="login" element={<Login />} />
             <Route path="signup" element={<SignUp />} />
-            <Route path="home" element={<StoredPasswordsTable />} />
             <Route path="add" element={<AddForm />} />
           </Route>
         </Routes>

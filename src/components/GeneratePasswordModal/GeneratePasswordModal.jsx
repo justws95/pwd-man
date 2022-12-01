@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { getAuth } from "firebase/auth";
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -27,7 +25,6 @@ const style = {
 
 
 const GeneratePasswordModal = ({ isOpen, handleClose, currentState }) => {
-  const navigate = useNavigate();
   const [newPwd, setNewPwd] = useState(null);
   const [pwdOpts, setPwdOpts] = useState([]);
   const [pwdRangeOpts, setPwdRangeOpts] = useState([]);
@@ -49,20 +46,13 @@ const GeneratePasswordModal = ({ isOpen, handleClose, currentState }) => {
     setPwdRangeOpts(opts);
   }
 
-  useEffect(() => {
-    const currentAuth = getAuth();
-
-    if (currentAuth.currentUser === null) {
-      navigate('/');
-    }
-  });
 
   return (
     <Modal
         open={isOpen}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby="modal-pwd-gen"
+        aria-describedby="modal-pwd-gen"
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h4" component="h2">

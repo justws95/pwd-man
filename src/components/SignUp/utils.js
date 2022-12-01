@@ -4,9 +4,12 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 export const signUpUser = (email, password, callback, errorCallback) => {
   const auth = getAuth();
   createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      console.info(`Account for user [${user.email}] has been created!`);
+    .then((response) => {
+      console.info(`Account for user [${response.user.email}] has been created!`);
+
+      // Store user info in session
+      sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken);
+
       callback('/');
     })
     .catch((error) => {

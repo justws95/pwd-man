@@ -3,10 +3,13 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export const logUserIn = async (email, password, callback, errorCallback) => {
   const auth = getAuth();
   signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      console.debug(`User has been signed in ${user.email}`);
-      callback('/home');
+    .then((response) => {
+      console.debug(`User has been signed in ${response.user.email}`);
+
+      // Store user info in session
+      sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken);
+
+      callback('/');
     })
     .catch((error) => {
       const errorCode = error.code;

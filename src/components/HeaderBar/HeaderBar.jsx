@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, signOut } from "firebase/auth";
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -14,27 +13,21 @@ import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+import { logUserOut } from './utils';
+
 const HeaderBar = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogout = (event) => {
     event.preventDefault();
-    const auth = getAuth();
-
-    console.log('Logout has been called.')
-
-    signOut(auth).then(() => {
-        // Sign-out successful.
-        console.log('User has been logged out successfully.')
-      }).catch((error) => {
-        console.error(`Unable to log user out: ${error}`);
-      });
+    setIsLoggedIn(false);
+    logUserOut(navigate);
   }
 
   const handleLoginClick = (event) => {
     event.preventDefault();
-    navigate('/');
+    navigate('/login');
   }
 
   const handleSignUpClick = (event) => {
@@ -42,17 +35,12 @@ const HeaderBar = () => {
     navigate('/signup');
   }
 
+
   useEffect(() => {
-    const currentAuth = getAuth();
+    const authToken = sessionStorage.getItem('Auth Token');
 
-    if (currentAuth != null) {
-      const user = currentAuth.currentUser;
-
-      if (user) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
+    if (authToken) {
+      setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
