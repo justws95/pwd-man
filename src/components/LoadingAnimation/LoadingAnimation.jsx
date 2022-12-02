@@ -2,17 +2,18 @@ import React from "react";
 import { motion } from "framer-motion";
 
 const loadingContainer = {
-  width: "4rem",
-  height: "4rem",
+  width: "15rem",
+  height: "15rem",
   display: "flex",
   justifyContent: "space-around",
 };
+
 const loadingCircle = {
   display: "block",
-  width: "1rem",
-  height: "1rem",
-  backgroundColor: "#3A36DB",
-  borderRadius: "0.5rem",
+  width: "3rem",
+  height: "3rem",
+  backgroundColor: "#d7d7d9",
+  borderRadius: "4rem",
 };
 
 const loadingContainerVariants = {
@@ -42,7 +43,7 @@ const loadingCircleTransition = {
   ease: 'easeInOut'
 }
 
-const LoadingAnimation = () => {
+export const LoadingAnimation = () => {
   return (
     <div>
       <div className="fixed  w-full min-h-screen z-50 bg-black opacity-30" />

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { getAuth } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 
 import Alert from '@mui/material/Alert';
@@ -7,6 +6,8 @@ import AlertTitle from '@mui/material/AlertTitle';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
@@ -21,9 +22,11 @@ import Typography from '@mui/material/Typography';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import LoadingAnimation from '../LoadingAnimation';
+import LoadingAnimation from './../LoadingAnimation';
 
 import { getStoredRecords, deleteRecordEntry } from './utils';
+
+import './StoredPasswordsTable.css';
 
 const style = {
   position: 'absolute',
@@ -39,6 +42,7 @@ const style = {
 
 
 const StoredPasswordsTable = () => {
+  const [initialLoadPerformed, setInitialLoad] = useState(false);
   const [records, setRecords] = useState([]);
   const [errorFetching, setErrorFetching] = useState(false);
   const [showPassword, setShowPassword] = useState({});
@@ -54,16 +58,12 @@ const StoredPasswordsTable = () => {
 
       let updatePwdVis = showPassword;
 
-      data.forEach((entry) => {
-        updatePwdVis[`${entry.site}`] = false;
-      });
-
-      return updatePwdVis;     
-    }).then((updatePwdVis) => {
       setShowPassword((showPassword) => ({
         ...showPassword,
         ...updatePwdVis
       }));
+
+      setInitialLoad(true);   
     }).catch((error) => {
       console.error(`Error occurred while fetching stored records: ${error}`);
       setErrorFetching(true);
@@ -102,9 +102,20 @@ const StoredPasswordsTable = () => {
       setDeletedRecord(recordToBeDeleted);
       setDeleteSuccess(true);
       setRecordToBeDeleted('');
+      setShowDeleteModal(false);
     }).catch((error) => {
       console.error(`Error occurred while deleting record: ${error}`);
     });
+  }
+
+
+  const handlePwdEdit = (event, siteName) => {
+    event.preventDefault();
+    console.log("Edit has been called");
+    
+    const entry = records.filter((r) => r.site === siteName)[0];
+    
+    console.log(`Associated record ${JSON.stringify(entry)}`);
   }
 
   const navigate = useNavigate();
@@ -136,97 +147,126 @@ const StoredPasswordsTable = () => {
           Successfully deleted record for <strong>{deletedRecord}</strong>
         </Alert>
       }
-      <TableContainer component={Paper}>
-        <Table 
-          stickyHeader
-          sx={{ minWidth: 650 }} 
-          size="small" 
-          aria-label="password-table"
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell>Site</TableCell>
-              <TableCell>Alternate Name</TableCell>
-              <TableCell>User ID</TableCell>
-              <TableCell>Password</TableCell>
-              <TableCell align="right">Show Password?</TableCell>
-              <TableCell align="right">Delete?</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {records.map((row) => (
-              <TableRow
-                key={row.site}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.site}
-                </TableCell>
-                <TableCell>{row.alternateName || 'N/A'}</TableCell>
-                <TableCell>{row.userId}</TableCell>
-                <TableCell>
-                  { showPassword[row.site] ? row.password : '*************' }
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton 
-                    aria-label="show-password"
-                    onClick={(event) => handleVisibilityToggle(event, row.site)}
+      {initialLoadPerformed ?
+        <React.Fragment>
+          <TableContainer component={Paper}>
+            <Table 
+              stickyHeader
+              sx={{ minWidth: 650 }} 
+              size="small" 
+              aria-label="password-table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>Site</TableCell>
+                  <TableCell>Alternate Name</TableCell>
+                  <TableCell>User ID</TableCell>
+                  <TableCell>Password</TableCell>
+                  <TableCell align="center">Show Password?</TableCell>
+                  <TableCell align="center">Edit</TableCell>
+                  <TableCell align="center">Delete?</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {records.map((row) => (
+                  <TableRow
+                    key={row.site}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    {
-                      showPassword[row.site] ? <VisibilityOff /> : <Visibility />
-                    }
-                  </IconButton>
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton 
-                    aria-label="delete"
-                    onClick={(event) => handleDeleteClick(event, row.site)}
-                  >
-                    <DeleteForeverIcon/>
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Modal
-        open={showDeleteModal}
-        onClose={handleDeleteModalClose}
-        aria-labelledby="modal-pwd-gen"
-        aria-describedby="modal-pwd-gen"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h4" component="h2">
-            Are you sure?
-          </Typography>
-          <Typography id="spring-modal-description" sx={{ mt: 2 }}>
-            This cannot be undone.
-          </Typography>
-          <Stack 
-            sx={{top: '50%',left: '50%', paddingTop: '2em'}} 
-            direction="row"
-            spacing={12}
+                    <TableCell component="th" scope="row">
+                      {row.site}
+                    </TableCell>
+                    <TableCell>{row.alternateName || 'N/A'}</TableCell>
+                    <TableCell>{row.userId}</TableCell>
+                    <TableCell>
+                      { showPassword[row.site] ? row.password : '*************' }
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton 
+                        aria-label="show-password"
+                        onClick={(event) => handleVisibilityToggle(event, row.site)}
+                      >
+                        {
+                          showPassword[row.site] ? <VisibilityOff /> : <Visibility />
+                        }
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton 
+                        aria-label="edit-password"
+                        onClick={(event) => handlePwdEdit(event, row.site)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton 
+                        aria-label="delete"
+                        onClick={(event) => handleDeleteClick(event, row.site)}
+                      >
+                        <DeleteForeverIcon/>
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Modal
+            open={showDeleteModal}
+            onClose={handleDeleteModalClose}
+            aria-labelledby="modal-pwd-gen"
+            aria-describedby="modal-pwd-gen"
           >
-            <Button 
-              variant="text" 
-              color="error"
-              sx={{padding: '5px'}}
-              onClick={(event) => handleDeleteModalClose(event)}
-            >
-              Close
-            </Button>
-            <Button 
-              variant="text" 
-              color="success"
-              sx={{padding: '5px'}}
-              onClick={(event) => handleConfirmDelete(event)}
-            >
-              Confirm Delete
-            </Button>
-          </Stack>
-        </Box>
-      </Modal>
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h4" component="h2">
+                Are you sure?
+              </Typography>
+              <Typography id="spring-modal-description" sx={{ mt: 2 }}>
+                This cannot be undone.
+              </Typography>
+              <Stack 
+                sx={{top: '50%',left: '50%', paddingTop: '2em'}} 
+                direction="row"
+                spacing={12}
+              >
+                <Button 
+                  variant="text" 
+                  color="error"
+                  sx={{padding: '5px'}}
+                  onClick={(event) => handleDeleteModalClose(event)}
+                >
+                  Close
+                </Button>
+                <Button 
+                  variant="text" 
+                  color="success"
+                  sx={{padding: '5px'}}
+                  onClick={(event) => handleConfirmDelete(event)}
+                >
+                  Confirm Delete
+                </Button>
+              </Stack>
+            </Box>
+          </Modal>
+        </React.Fragment>
+        :
+        <Grid
+          className='loading-animation-box'
+          spacing={0}
+          alignItems="center"
+          justify="center"
+          sx={{paddingTop: '50%'}}
+        >
+          <Box 
+            display="flex" 
+            alignItems="center"
+            justifyContent="center"
+          >
+            <LoadingAnimation/>
+          </Box>
+        </Grid>
+      }
     </React.Fragment>
   );
 }
