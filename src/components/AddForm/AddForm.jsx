@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import * as urlRegex from 'url-regex';
 import { useNavigate } from 'react-router-dom';
 
-
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -13,7 +11,6 @@ import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import Grid from '@mui/material/Grid';
 import Modal from '@mui/material/Modal';
-import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -26,13 +23,17 @@ import { addNewPassword } from './utils';
 import { Typography } from '@mui/material';
 
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '40%',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 
 const AddForm = () => {
@@ -179,6 +180,41 @@ const AddForm = () => {
     setShowSuccessModal(false);
   }
 
+  const handleAddMore = (event) => {
+    event.preventDefault();
+
+    const updateFormFields = {
+      site: '',
+      userId: '',
+      password: '',
+      alternateName: '',
+    }
+
+    const updatePristine = {
+      site: true,
+      userId: true,
+      password: true,
+      alternateName: true,
+    }
+
+    setFormFields(formFields => ({
+      ...formFields,
+      ...updateFormFields
+    }));
+
+    setFormFieldsPristineState(formFieldsPristineState => ({
+      ...formFieldsPristineState,
+      ...updatePristine
+    }));
+
+    setShowSuccessModal(false);
+  }
+
+  const handleManagePasswords = (event) => {
+    event.preventDefault();
+    navigate('/');
+  }
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -192,121 +228,156 @@ const AddForm = () => {
 
   return (
     <React.Fragment>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={1}>
-          <Grid item>
-            <Item>
-              <Box
-                component="form"
-                sx={{
-                  '& .MuiTextField-root': { m: 1, width: '25ch' },
-                }}
-                noValidate
-                autoComplete="off"
-              >
-                <div>
-                  <TextField
-                    required
-                    id='outlined-required'
-                    label='Site'
-                    placeholder='Site'
-                    value={formFields.site}
-                    onChange={handleSiteInputChange}
-                    error={(formFields.site.length <= 0 && formFieldsPristineState.site === false) || !isValidSite}
-                    helperText={formFields.site.length <= 0 && formFieldsPristineState.site === false ? 'Site is required.' : null}
-                  />
-                  <TextField
-                    required
-                    id='outlined'
-                    label='User ID'
-                    placeholder='User ID'
-                    value={formFields.userId}
-                    onChange={handleUserIdInputChange}
-                    error={formFields.userId.length <= 0 && formFieldsPristineState.userId === false}
-                    helperText={formFields.userId.length <= 0 && formFieldsPristineState.userId === false ? 'User ID is required.' : null}
-                  />
-                  <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                    <InputLabel
-                      required
-                      htmlFor="outlined-adornment-password"
-                      error={formFields.password.length <= 0 && formFieldsPristineState.password === false}
-                    >
-                      Password
-                    </InputLabel>
-                    <OutlinedInput
-                      id="outlined-adornment-password"
-                      type={pwdHidden ? "password" : "text"}
-                      value={formFields.password}
-                      onChange={handlePasswordInputChange}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {pwdHidden  ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                      label="Password"
-                    />
-                    <FormHelperText 
-                      id="filled-weight-helper-text"
-                      error={formFields.password.length <= 0 && formFieldsPristineState.password === false}
-                    >
-                      {
-                        formFields.password.length <= 0 && formFieldsPristineState.password === false ? 'Password is required.' : null
-                      }
-                    </FormHelperText>
-                  </FormControl>
-                  <TextField
-                    id='outlined'
-                    label='Alternate Name'
-                    placeholder='Alternate Name'
-                    helperText='Nickname for this record'
-                    value={formFields.alternateName}
-                    onChange={handleAlternateNameInputChange}
-                  />
-                </div>
-              </Box>
-            </Item>
-            <Item>
-              <Stack spacing={2} direction="row">
-                <Button 
-                  color="secondary" 
-                  variant="outlined"
-                  onClick={handlePwdModalOpen}
-                >
-                  Generate Password
-                </Button>
-                <GeneratePasswordModal 
-                  isOpen={pwdGenModalIsOpen} 
-                  handleClose={handlePwdModalClose}
-                  currentState={formFields}
+      <Box>
+        <Grid 
+          container 
+          spacing={1} 
+          columns={12}
+          alignContent='center'
+          sx={{
+            paddingTop:'3em',
+            paddingLeft: '2em',
+          }}
+        >
+          <Grid item alignContent='center'>
+            <Box
+              component="form"
+              sx={{
+                '& .MuiTextField-root': { m: 1, width: '25ch' },
+              }}
+              noValidate
+              autoComplete="off"
+              alignContent='center'
+            >
+              <div>
+                <TextField
+                  required
+                  id='outlined-required'
+                  label='Site'
+                  placeholder='Site'
+                  value={formFields.site}
+                  onChange={handleSiteInputChange}
+                  error={(formFields.site.length <= 0 && formFieldsPristineState.site === false) || !isValidSite}
+                  helperText={formFields.site.length <= 0 && formFieldsPristineState.site === false ? 'Site is required.' : null}
                 />
-                <Button 
-                  color="success" 
-                  variant="outlined"
-                  disabled={!submitReady}
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </Button>
-              </Stack>
-            </Item>
+                <TextField
+                  required
+                  id='outlined'
+                  label='User ID'
+                  placeholder='User ID'
+                  value={formFields.userId}
+                  onChange={handleUserIdInputChange}
+                  error={formFields.userId.length <= 0 && formFieldsPristineState.userId === false}
+                  helperText={formFields.userId.length <= 0 && formFieldsPristineState.userId === false ? 'User ID is required.' : null}
+                />
+                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                  <InputLabel
+                    required
+                    htmlFor="outlined-adornment-password"
+                    error={formFields.password.length <= 0 && formFieldsPristineState.password === false}
+                  >
+                    Password
+                  </InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-password"
+                    type={pwdHidden ? "password" : "text"}
+                    value={formFields.password}
+                    onChange={handlePasswordInputChange}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {pwdHidden  ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password"
+                  />
+                  <FormHelperText 
+                    id="filled-weight-helper-text"
+                    error={formFields.password.length <= 0 && formFieldsPristineState.password === false}
+                  >
+                    {
+                      formFields.password.length <= 0 && formFieldsPristineState.password === false ? 'Password is required.' : null
+                    }
+                  </FormHelperText>
+                </FormControl>
+                <TextField
+                  id='outlined'
+                  label='Alternate Name'
+                  placeholder='Alternate Name'
+                  helperText='Nickname for this record'
+                  value={formFields.alternateName}
+                  onChange={handleAlternateNameInputChange}
+                />
+              </div>
+            </Box>
+            <Stack spacing={2} direction="row">
+              <Button 
+                color="secondary" 
+                variant="outlined"
+                onClick={handlePwdModalOpen}
+              >
+                Generate Password
+              </Button>
+              <GeneratePasswordModal 
+                isOpen={pwdGenModalIsOpen} 
+                handleClose={handlePwdModalClose}
+                currentState={formFields}
+              />
+              <Button 
+                color="success" 
+                variant="outlined"
+                disabled={!submitReady}
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
+            </Stack>
           </Grid>
         </Grid>
       </Box>
       <Modal
-        open={showSuccessModal}
-        onClose={(event) => handleModalClose(event)}
-        aria-labelledby="pwd-add-confirm-modal"
-        aria-describedby="pwd-add-confirm-modal"
-      >
-        <Typography>My name Jeff</Typography>
-      </Modal>
+            open={showSuccessModal}
+            onClose={(event) => handleModalClose(event)}
+            aria-labelledby="pwd-add-confirm-modal"
+            aria-describedby="pwd-add-confirm-modal"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h4" component="h2">
+                Password has been saved!
+              </Typography>
+              <Typography id="spring-modal-description" sx={{ mt: 2 }}>
+                Would you like to add more?
+              </Typography>
+              <Stack 
+                sx={{top: '50%',left: '50%', paddingTop: '2em'}} 
+                direction="row"
+                spacing={12}
+              >
+                <Button 
+                  variant="text" 
+                  color="secondary"
+                  sx={{padding: '5px'}}
+                  onClick={(event) => handleAddMore(event)}
+                >
+                  Add Another
+                </Button>
+                <Button 
+                  variant="text" 
+                  color="success"
+                  sx={{padding: '5px'}}
+                  onClick={(event) => handleManagePasswords(event)}
+                >
+                  Manage Passwords
+                </Button>
+              </Stack>
+            </Box>
+          </Modal>
     </React.Fragment>
   );
 }

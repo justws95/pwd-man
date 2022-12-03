@@ -8,6 +8,7 @@ export const logUserIn = async (email, password, callback, errorCallback) => {
 
       // Store user info in session
       sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken);
+      sessionStorage.setItem('User ID', response.user.uid);
 
       callback('/');
     })
