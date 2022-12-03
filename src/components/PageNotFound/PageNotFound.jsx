@@ -35,7 +35,7 @@ const PageNotFound = () => {
       >
         <Grid item>
           <Button 
-            variant='contained'
+            variant='outlined'
             onClick={(event) => {
               event.preventDefault();
               navigate('/');

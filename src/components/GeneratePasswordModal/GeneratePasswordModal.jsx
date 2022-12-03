@@ -24,7 +24,7 @@ const style = {
 };
 
 
-const GeneratePasswordModal = ({ isOpen, handleClose, currentState }) => {
+const GeneratePasswordModal = ({ isOpen, handleClose, currentState, testValidity }) => {
   const [newPwd, setNewPwd] = useState(null);
   const [pwdOpts, setPwdOpts] = useState([]);
   const [pwdRangeOpts, setPwdRangeOpts] = useState([]);
@@ -32,6 +32,7 @@ const GeneratePasswordModal = ({ isOpen, handleClose, currentState }) => {
   const generateNewPassword = () => {
     const pwd = generateRandomString(pwdOpts, pwdRangeOpts);
     setNewPwd(pwd);
+    testValidity();
   }
 
   const handlePwdAccept = () => {

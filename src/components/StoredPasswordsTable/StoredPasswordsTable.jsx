@@ -23,6 +23,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import LoadingAnimation from './../LoadingAnimation';
+import NoRecordsFound from './NoRecordsFound';
 
 import { getStoredRecords, deleteRecordEntry } from './utils';
 
@@ -147,7 +148,7 @@ const StoredPasswordsTable = () => {
           Successfully deleted record for <strong>{deletedRecord}</strong>
         </Alert>
       }
-      {initialLoadPerformed ?
+      { (initialLoadPerformed && records.length > 0) &&
         <React.Fragment>
           <TableContainer component={Paper}>
             <Table 
@@ -250,7 +251,11 @@ const StoredPasswordsTable = () => {
             </Box>
           </Modal>
         </React.Fragment>
-        :
+      }
+      { (initialLoadPerformed && records.length <= 0) &&
+        <NoRecordsFound />
+      }
+      { !initialLoadPerformed &&
         <Grid
           className='loading-animation-box'
           spacing={0}

@@ -328,6 +328,7 @@ const AddForm = () => {
                 isOpen={pwdGenModalIsOpen} 
                 handleClose={handlePwdModalClose}
                 currentState={formFields}
+                testValidity={checkSubmitReadyAndSet}
               />
               <Button 
                 color="success" 
