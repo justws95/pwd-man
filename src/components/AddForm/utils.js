@@ -8,10 +8,8 @@ export const addNewPassword = async (data, successCallback) => {
     const uid = sessionStorage.getItem('User ID');
     
     if (!uid) {
-      /*
-      const errMsg = 'User ID not found in session';
-      throw UserSessionException(errMsg);*/
-      throw 'User ID not found in session';
+      const errMsg = 'User ID not found in session storage';
+      throw new UserSessionException(errMsg);
     } else {
       data['ownerID'] = uid;
     }
@@ -25,7 +23,8 @@ export const addNewPassword = async (data, successCallback) => {
   }
 }
 
-export const UserSessionException = (message) => {
-  this.message = message;
-  this.name = 'UserSessionException';
+class UserSessionException extends Error {
+  constructor(errMsg) {
+    super(`${errMsg}`);
+  }
 }

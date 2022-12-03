@@ -44,7 +44,7 @@ const HeaderBar = () => {
     } else {
       setIsLoggedIn(false);
     }
-  });
+  }, [setIsLoggedIn]);
 
   return (
     <React.Fragment>

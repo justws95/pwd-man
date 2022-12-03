@@ -342,42 +342,42 @@ const AddForm = () => {
         </Grid>
       </Box>
       <Modal
-            open={showSuccessModal}
-            onClose={(event) => handleModalClose(event)}
-            aria-labelledby="pwd-add-confirm-modal"
-            aria-describedby="pwd-add-confirm-modal"
+        open={showSuccessModal}
+        onClose={(event) => handleModalClose(event)}
+        aria-labelledby="pwd-add-confirm-modal"
+        aria-describedby="pwd-add-confirm-modal"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h4" component="h2">
+            Password has been saved!
+          </Typography>
+          <Typography id="spring-modal-description" sx={{ mt: 2 }}>
+            Would you like to add more?
+          </Typography>
+          <Stack 
+            sx={{top: '50%',left: '50%', paddingTop: '2em'}} 
+            direction="row"
+            spacing={12}
           >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h4" component="h2">
-                Password has been saved!
-              </Typography>
-              <Typography id="spring-modal-description" sx={{ mt: 2 }}>
-                Would you like to add more?
-              </Typography>
-              <Stack 
-                sx={{top: '50%',left: '50%', paddingTop: '2em'}} 
-                direction="row"
-                spacing={12}
-              >
-                <Button 
-                  variant="text" 
-                  color="secondary"
-                  sx={{padding: '5px'}}
-                  onClick={(event) => handleAddMore(event)}
-                >
-                  Add Another
-                </Button>
-                <Button 
-                  variant="text" 
-                  color="success"
-                  sx={{padding: '5px'}}
-                  onClick={(event) => handleManagePasswords(event)}
-                >
-                  Manage Passwords
-                </Button>
-              </Stack>
-            </Box>
-          </Modal>
+            <Button 
+              variant="text" 
+              color="secondary"
+              sx={{padding: '5px'}}
+              onClick={(event) => handleAddMore(event)}
+            >
+              Add Another
+            </Button>
+            <Button 
+              variant="text" 
+              color="success"
+              sx={{padding: '5px'}}
+              onClick={(event) => handleManagePasswords(event)}
+            >
+              Manage Passwords
+            </Button>
+          </Stack>
+        </Box>
+      </Modal>
     </React.Fragment>
   );
 }

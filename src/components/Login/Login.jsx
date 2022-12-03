@@ -10,7 +10,6 @@
 */
 import React, { useState, useEffect } from 'react';
 import * as validator from 'email-validator';
-import { getAuth } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 
 
@@ -35,6 +34,8 @@ const theme = createTheme();
 const Login = () => {
   const [formReady, setFormReady] = useState(false);
   const [emailInput, setEmailInput] = useState('');
+  const [emailPristine, setEmailPristine] = useState(true);
+  const [emailValid, setEmailValid] = useState(false);
   const [pwdInput, setPwdInput] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [showErrorMsg, setShowErrorMsg] = useState(false);
@@ -54,7 +55,16 @@ const Login = () => {
 
   const handleEmailChange = (event) => {
     event.preventDefault();
-    setEmailInput(event.target.value);
+    const input = event.target.value;
+
+    setEmailInput(input);
+
+    if (emailPristine) {
+      setEmailPristine(false);
+    }
+
+    const isValid = validator.validate(input);
+    setEmailValid(isValid);
   }
 
   const handlePwdChange = (event) => {
@@ -79,7 +89,7 @@ const Login = () => {
     if (authToken) {
       navigate('/');
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <React.Fragment>
@@ -118,6 +128,7 @@ const Login = () => {
                 name="email"
                 autoFocus
                 onChange={handleEmailChange}
+                error={!emailPristine && !emailValid}
               />
               <TextField
                 margin="normal"

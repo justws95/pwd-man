@@ -34,6 +34,8 @@ const SignUp = () => {
   const navigate = useNavigate();
   const [formReady, setFormReady] = useState(false);
   const [emailInput, setEmailInput] = useState('');
+  const [emailPristine, setEmailPristine] = useState(true);
+  const [emailValid, setEmailValid] = useState(false);
   const [pwdInput, setPwdInput] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [showErrorMsg, setShowErrorMsg] = useState(false);
@@ -53,9 +55,18 @@ const SignUp = () => {
     }
   };
 
-  const handleEmailChange = (event) => {
+  const handleEmailChange = (event) => {  
     event.preventDefault();
-    setEmailInput(event.target.value);
+    const input = event.target.value;
+
+    setEmailInput(input);
+
+    if (emailPristine) {
+      setEmailPristine(false);
+    }
+
+    const isValid = validator.validate(input);
+    setEmailValid(isValid);
   }
 
   const handlePwdChange = (event) => {
@@ -111,6 +122,7 @@ const SignUp = () => {
                     label="Email Address"
                     name="email"
                     onChange={handleEmailChange}
+                    error={!emailPristine && !emailValid}
                   />
                 </Grid>
                 <Grid item xs={12}>
