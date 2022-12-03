@@ -3,8 +3,7 @@ import {
   collection, 
   deleteDoc,
   doc,
-  getDocs, 
-  updateDoc
+  getDocs
 } from 'firebase/firestore';
 
 export const getStoredRecords = async () => {
