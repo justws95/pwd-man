@@ -104,19 +104,20 @@ const StoredPasswordsTable = () => {
       setDeleteSuccess(true);
       setRecordToBeDeleted('');
       setShowDeleteModal(false);
+
+      // Update the visible records table
+      const recordsUpdate = records.filter((r) => r.site !== recordToBeDeleted);
+      setRecords(recordsUpdate);
+
     }).catch((error) => {
       console.error(`Error occurred while deleting record: ${error}`);
     });
   }
 
-
-  const handlePwdEdit = (event, siteName) => {
+  const handlePwdEdit = (event, site) => {
     event.preventDefault();
-    console.log("Edit has been called");
-    
-    const entry = records.filter((r) => r.site === siteName)[0];
-    
-    console.log(`Associated record ${JSON.stringify(entry)}`);
+    const entry = records.filter((r) => r.site === site)[0];
+    navigate(`/edit?documentID=${entry.id}`);
   }
 
   const navigate = useNavigate();
@@ -179,8 +180,10 @@ const StoredPasswordsTable = () => {
                     </TableCell>
                     <TableCell>{row.alternateName || 'N/A'}</TableCell>
                     <TableCell>{row.userId}</TableCell>
-                    <TableCell>
-                      { showPassword[row.site] ? row.password : '*************' }
+                    <TableCell
+                      className={`${(!showPassword[row.site] || showPassword[row.site] === false) ? 'unselectable-element' : ''}`}
+                    >
+                      { showPassword[row.site] ? row.password : '*'.repeat(21) }
                     </TableCell>
                     <TableCell align="center">
                       <IconButton 
@@ -237,7 +240,7 @@ const StoredPasswordsTable = () => {
                   sx={{padding: '5px'}}
                   onClick={(event) => handleDeleteModalClose(event)}
                 >
-                  Close
+                  Cancel
                 </Button>
                 <Button 
                   variant="text" 

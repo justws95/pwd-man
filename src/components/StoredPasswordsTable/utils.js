@@ -1,4 +1,3 @@
-import { store } from '../../utils';
 import { 
   collection, 
   deleteDoc,
@@ -6,11 +5,23 @@ import {
   getDocs
 } from 'firebase/firestore';
 
+import { store } from '../../utils';
+import UserSessionException from '../common';
+
 export const getStoredRecords = async () => {
   const db = store;
   const records = [];
 
-  const querySnapshot = await getDocs(collection(db, 'records'));
+  const uid = sessionStorage.getItem('User ID');
+    
+  if (!uid) {
+    const errMsg = 'User ID not found in session storage';
+    throw new UserSessionException(errMsg);
+  }
+ 
+  const userCollection = collection(db, 'records', `${uid}`, 'current');
+  const querySnapshot = await getDocs(userCollection);
+  
   querySnapshot.forEach((doc) => {
     let data = doc.data();
     data['id'] = doc.id;

@@ -1,5 +1,7 @@
-import { store } from '../../utils';
 import { collection, addDoc } from 'firebase/firestore';
+
+import { store } from '../../utils';
+import UserSessionException from '../common';
 
 export const addNewPassword = async (data, successCallback) => {
   const db = store;
@@ -20,11 +22,5 @@ export const addNewPassword = async (data, successCallback) => {
   } catch (e) {
     console.error("Error adding document: ", e);
     successCallback(false);
-  }
-}
-
-class UserSessionException extends Error {
-  constructor(errMsg) {
-    super(`${errMsg}`);
   }
 }
