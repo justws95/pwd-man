@@ -1,2 +1,2 @@
-export { default } from './UserSessionException';
+export { UserSessionException, UserSecretNotFoundException } from './UserSessionException';
 export { useQuery } from './useQuery';

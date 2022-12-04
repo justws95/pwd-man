@@ -6,7 +6,7 @@ import {
 } from 'firebase/firestore';
 
 import { store } from '../../utils';
-import UserSessionException from '../common';
+import { UserSessionException } from '../common';
 
 export const getStoredRecords = async () => {
   const db = store;

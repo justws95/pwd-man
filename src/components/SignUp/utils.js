@@ -1,5 +1,6 @@
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, addDoc } from 'firebase/firestore';
+import *  as randomstring from 'randomstring';
 
 import { store } from '../../utils';
 
@@ -9,6 +10,14 @@ export const signUpUser = (email, password, callback, errorCallback) => {
   createUserWithEmailAndPassword(auth, email, password)
     .then(async (response) => {
       console.info(`Account for user [${response.user.email}] has been created!`);
+
+      // Generate the client side secret used for AES
+      const secret = randomstring.generate({
+        length: 42,
+        charset: 'alphanumeric'
+      });
+
+      localStorage.setItem('PWD MAN CLIENT SECRET', secret)
 
       // Add user info to user table
       const db = store;

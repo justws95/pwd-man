@@ -261,10 +261,9 @@ const StoredPasswordsTable = () => {
       { !initialLoadPerformed &&
         <Grid
           className='loading-animation-box'
-          spacing={0}
           alignItems="center"
           justify="center"
-          sx={{paddingTop: '50%'}}
+          sx={{paddingTop: '20%'}}
         >
           <Box 
             display="flex" 

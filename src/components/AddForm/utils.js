@@ -1,7 +1,8 @@
 import { collection, addDoc } from 'firebase/firestore';
+import AES from 'crypto-js/aes';
 
 import { store } from '../../utils';
-import UserSessionException from '../common';
+import { UserSessionException, UserSecretNotFoundException } from '../common/';
 
 export const addNewPassword = async (data, successCallback) => {
   const db = store;
@@ -15,6 +16,18 @@ export const addNewPassword = async (data, successCallback) => {
     } else {
       data['ownerID'] = uid;
     }
+
+    const userSecret = localStorage.getItem('PWD MAN CLIENT SECRET');
+
+    if (!userSecret) {
+      const errMsg = 'User Client Side Secret not found in local storage';
+      throw new UserSecretNotFoundException(errMsg);
+    }
+
+    // Encrypt the password client-side using AES-256 and the stored secret
+    let encryptedPwd = AES.encrypt(data['password'], userSecret);
+
+    console.log(`Encrypted Password => ${encryptedPwd}`);
 
     const docRef = await addDoc(collection(db, 'records', `${uid}`, 'current'), data);
     console.debug("Document written with ID: ", docRef.id);
