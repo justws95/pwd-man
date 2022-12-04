@@ -4,9 +4,11 @@ import {
   doc,
   getDocs
 } from 'firebase/firestore';
+import * as CryptoJS from 'crypto-js';
 
 import { store } from '../../utils';
-import { UserSessionException } from '../common';
+import { UserSessionException, UserSecretNotFoundException } from '../common/';
+
 
 export const getStoredRecords = async () => {
   const db = store;
@@ -18,13 +20,25 @@ export const getStoredRecords = async () => {
     const errMsg = 'User ID not found in session storage';
     throw new UserSessionException(errMsg);
   }
- 
+
+  const userSecret = localStorage.getItem('PWD MAN CLIENT SECRET');
+
+  if (!userSecret) {
+    const errMsg = 'User Client Side Secret not found in local storage';
+    throw new UserSecretNotFoundException(errMsg);
+  }
+
   const userCollection = collection(db, 'records', `${uid}`, 'current');
   const querySnapshot = await getDocs(userCollection);
   
   querySnapshot.forEach((doc) => {
     let data = doc.data();
     data['id'] = doc.id;
+
+    // Decrypt the passwords
+    let decryptedPwd = CryptoJS.AES.decrypt(data['password'], userSecret).toString(CryptoJS.enc.Utf8);
+    data['password'] = String(decryptedPwd);
+
     records.push(data); 
   });
 

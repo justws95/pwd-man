@@ -13,7 +13,7 @@ export const signUpUser = (email, password, callback, errorCallback) => {
 
       // Generate the client side secret used for AES
       const secret = randomstring.generate({
-        length: 42,
+        length: 44,
         charset: 'alphanumeric'
       });
 

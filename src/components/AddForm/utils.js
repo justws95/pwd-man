@@ -26,8 +26,7 @@ export const addNewPassword = async (data, successCallback) => {
 
     // Encrypt the password client-side using AES-256 and the stored secret
     let encryptedPwd = AES.encrypt(data['password'], userSecret);
-
-    console.log(`Encrypted Password => ${encryptedPwd}`);
+    data['password'] = String(encryptedPwd);
 
     const docRef = await addDoc(collection(db, 'records', `${uid}`, 'current'), data);
     console.debug("Document written with ID: ", docRef.id);
