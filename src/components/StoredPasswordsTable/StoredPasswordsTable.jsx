@@ -25,7 +25,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LoadingAnimation from './../LoadingAnimation';
 import NoRecordsFound from './NoRecordsFound';
 
-import { getStoredRecords, deleteRecordEntry } from './utils';
+import { deleteRecordEntry } from './utils';
+import { getStoredRecords } from '../common';
 
 import './StoredPasswordsTable.css';
 
@@ -165,7 +166,9 @@ const StoredPasswordsTable = () => {
                   <TableCell>User ID</TableCell>
                   <TableCell>Password</TableCell>
                   <TableCell align="center">Show Password?</TableCell>
+                  {/*
                   <TableCell align="center">Edit</TableCell>
+                  */}
                   <TableCell align="center">Delete?</TableCell>
                 </TableRow>
               </TableHead>
@@ -195,6 +198,7 @@ const StoredPasswordsTable = () => {
                         }
                       </IconButton>
                     </TableCell>
+                    {/*
                     <TableCell align="center">
                       <IconButton 
                         aria-label="edit-password"
@@ -203,6 +207,7 @@ const StoredPasswordsTable = () => {
                         <EditIcon />
                       </IconButton>
                     </TableCell>
+                    */}
                     <TableCell align="center">
                       <IconButton 
                         aria-label="delete"

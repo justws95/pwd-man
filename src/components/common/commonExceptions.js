@@ -15,3 +15,9 @@ export class DuplicateUserFoundException extends Error {
     super(`${errMsg}`);
   }
 }
+
+export class DocumentNotFoundException extends Error {
+  constructor(errMsg) {
+    super(`${errMsg}`);
+  }
+}

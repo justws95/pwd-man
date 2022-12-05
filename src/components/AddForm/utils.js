@@ -4,6 +4,7 @@ import AES from 'crypto-js/aes';
 import { store } from '../../utils';
 import { 
   getAESsecret,
+  getStoredRecords,
   UserSessionException, 
   UserSecretNotFoundException 
 } from '../common/';
@@ -38,5 +39,27 @@ export const addNewPassword = async (data, successCallback) => {
   } catch (e) {
     console.error("Error adding document: ", e);
     successCallback(false);
+  }
+}
+
+export const getCurrentlyManagedSites = async () => {
+  try {
+    const uid = sessionStorage.getItem('User ID');
+    
+    if (!uid) {
+      const errMsg = 'User ID not found in session storage';
+      throw new UserSessionException(errMsg);
+    }
+
+    const currentData = await getStoredRecords();
+
+    let siteArr = [];
+    currentData.forEach((record) => {
+      siteArr.push(record.site)
+    });
+
+    return siteArr;
+  } catch (err) {
+    console.error(`Error occurred while fetching currently managed sites: ${err}`);
   }
 }

@@ -19,7 +19,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import GeneratePasswordModal from '../GeneratePasswordModal';
 
-import { addNewPassword } from './utils';
+import { addNewPassword, getCurrentlyManagedSites } from './utils';
 import { Typography } from '@mui/material';
 
 
@@ -54,6 +54,8 @@ const AddForm = () => {
   const [pwdHidden, setPwdHidden] = useState(true);
   const [isValidSite, setIsValidSite] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [currentSites, setCurrentSites] = useState([]);
+  const [siteFieldErrMsg, setSiteFieldErrMsg] = useState('');
 
   const handlePwdModalOpen = () => seOpenPwdGenModal(true);
   const handlePwdModalClose = () => seOpenPwdGenModal(false);
@@ -66,10 +68,15 @@ const AddForm = () => {
     event.preventDefault();
   };
 
-  const checkSubmitReadyAndSet = () => {
+  const checkSubmitReadyAndSet = (overrideValidSite) => {
     const ff = formFields;
 
-    if (ff.site.length > 0 && ff.userId.length > 0 && ff.password.length > 0 && isValidSite) {
+    if (
+      ff.site.length > 0 && 
+      ff.userId.length > 0 && 
+      ff.password.length > 0 && 
+      (isValidSite || overrideValidSite)
+    ){
       setSubmitReady(true);
     } else {
       setSubmitReady(false);
@@ -97,9 +104,33 @@ const AddForm = () => {
     }));
 
     const isValidURL = urlRegex({exact: true, strict: false}).test(formFields.site);
-    setIsValidSite(isValidURL);
+    let validSiteState = isValidURL;
+
+    if (formFields.site.length <= 0 && formFieldsPristineState.site === false) {
+      const errMsg = 'Site field is required'
+      validSiteState = false;
+
+      setIsValidSite(false);
+      setSiteFieldErrMsg(errMsg);
+    } else if (!isValidURL) {
+      const errMsg = `${update.site} is not a valid website domain`;
+      validSiteState = false;
+
+      setIsValidSite(false);
+      setSiteFieldErrMsg(errMsg);
+    } else if (currentSites.includes(update.site)) {
+      const errMsg = `Record for ${update.site} already exists!`;
+      validSiteState = false;
+
+      setIsValidSite(false);
+      setSiteFieldErrMsg(errMsg);
+    } else {
+      validSiteState = true;
+      setIsValidSite(true);
+      setSiteFieldErrMsg(null);
+    }
     
-    checkSubmitReadyAndSet();
+    checkSubmitReadyAndSet(validSiteState);
   };
 
   const handleUserIdInputChange = (event) => {
@@ -225,6 +256,13 @@ const AddForm = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    getCurrentlyManagedSites()
+    .then((sites) => {
+      setCurrentSites(sites);
+    })
+  }, [setCurrentSites]);
+
 
   return (
     <React.Fragment>
@@ -257,8 +295,8 @@ const AddForm = () => {
                   placeholder='Site'
                   value={formFields.site}
                   onChange={handleSiteInputChange}
-                  error={(formFields.site.length <= 0 && formFieldsPristineState.site === false) || !isValidSite}
-                  helperText={formFields.site.length <= 0 && formFieldsPristineState.site === false ? 'Site is required.' : null}
+                  error={!isValidSite}
+                  helperText={!isValidSite ? `${siteFieldErrMsg}` : null}
                 />
                 <TextField
                   required
