@@ -21,3 +21,9 @@ export class DocumentNotFoundException extends Error {
     super(`${errMsg}`);
   }
 }
+
+export class UnexpectedOutcomeException extends Error {
+  constructor(errMsg) {
+    super(`${errMsg}`);
+  }
+}

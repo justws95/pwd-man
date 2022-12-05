@@ -1,6 +1,7 @@
 export { 
   DocumentNotFoundException,
   DuplicateUserFoundException,
+  UnexpectedOutcomeException,
   UserSessionException, 
   UserSecretNotFoundException 
 } from './commonExceptions';

@@ -1,6 +1,8 @@
+import { async } from "@firebase/util";
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   updateDoc,
   query,
@@ -9,11 +11,27 @@ import {
 } from "firebase/firestore";
 
 import { store } from '../../utils';
-import { DuplicateUserFoundException } from './commonExceptions';
+import { 
+  DuplicateUserFoundException,
+  DocumentNotFoundException,
+  UnexpectedOutcomeException,
+  UserSessionException
+} from './index';
+
 
 export const getAESsecret = () => {
   const userSecret = sessionStorage.getItem('PWD MAN CLIENT SECRET');
-  return userSecret;
+
+  if (userSecret) {
+    return userSecret;
+  } else {
+    fetchAESsecretFromServer().then((data) => {
+      console.log(`Returning AES secret => ${data.secret}`);
+      return data.secret;
+    })
+  }
+
+  throw new UnexpectedOutcomeException('Code execution reached place in code that should not have been possible.');
 }
 
 export const setAESsecret = (newSecret) => {
@@ -54,4 +72,23 @@ export const setUserLoginState = async (uid, state) => {
   }
 
   await updateDoc(docRef, userUpdate);
+}
+
+const fetchAESsecretFromServer = async () => {
+  const uid = sessionStorage.getItem('User ID');
+
+  if (!uid) {
+    const errMsg = 'User ID not found in session storage';
+    throw new UserSessionException(errMsg);
+  }
+
+  const taskDocRef = doc(store, 'users', `${uid}`);
+  const docSnap = await getDoc(taskDocRef);
+
+  if (!docSnap.exists()) {
+    const errMsg = `User record for user [${uid}] not found in store`;
+    throw new DocumentNotFoundException(errMsg);
+  }
+
+  return docSnap.data();
 }
