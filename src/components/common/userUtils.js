@@ -12,12 +12,12 @@ import { store } from '../../utils';
 import { DuplicateUserFoundException } from './commonExceptions';
 
 export const getAESsecret = () => {
-  const userSecret = localStorage.getItem('PWD MAN CLIENT SECRET');
+  const userSecret = sessionStorage.getItem('PWD MAN CLIENT SECRET');
   return userSecret;
 }
 
 export const setAESsecret = (newSecret) => {
-  localStorage.setItem('PWD MAN CLIENT SECRET', newSecret);
+  sessionStorage.setItem('PWD MAN CLIENT SECRET', newSecret);
 }
 
 export const setUserLoginState = async (uid, state) => {
