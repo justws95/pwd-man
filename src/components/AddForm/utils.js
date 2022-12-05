@@ -2,7 +2,11 @@ import { collection, addDoc } from 'firebase/firestore';
 import AES from 'crypto-js/aes';
 
 import { store } from '../../utils';
-import { UserSessionException, UserSecretNotFoundException } from '../common/';
+import { 
+  getAESsecret,
+  UserSessionException, 
+  UserSecretNotFoundException 
+} from '../common/';
 
 export const addNewPassword = async (data, successCallback) => {
   const db = store;
@@ -17,7 +21,7 @@ export const addNewPassword = async (data, successCallback) => {
       data['ownerID'] = uid;
     }
 
-    const userSecret = localStorage.getItem('PWD MAN CLIENT SECRET');
+    const userSecret = getAESsecret();
 
     if (!userSecret) {
       const errMsg = 'User Client Side Secret not found in local storage';

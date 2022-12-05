@@ -7,7 +7,11 @@ import {
 import * as CryptoJS from 'crypto-js';
 
 import { store } from '../../utils';
-import { UserSessionException, UserSecretNotFoundException } from '../common/';
+import { 
+  getAESsecret,
+  UserSessionException, 
+  UserSecretNotFoundException 
+} from '../common/';
 
 
 export const getStoredRecords = async () => {
@@ -21,7 +25,7 @@ export const getStoredRecords = async () => {
     throw new UserSessionException(errMsg);
   }
 
-  const userSecret = localStorage.getItem('PWD MAN CLIENT SECRET');
+  const userSecret = getAESsecret();
 
   if (!userSecret) {
     const errMsg = 'User Client Side Secret not found in local storage';

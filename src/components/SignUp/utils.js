@@ -1,8 +1,9 @@
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import *  as randomstring from 'randomstring';
 
 import { store } from '../../utils';
+import { setAESsecret } from '../common';
 
 
 export const signUpUser = (email, password, callback, errorCallback) => {
@@ -17,7 +18,7 @@ export const signUpUser = (email, password, callback, errorCallback) => {
         charset: 'alphanumeric'
       });
 
-      localStorage.setItem('PWD MAN CLIENT SECRET', secret)
+      setAESsecret(secret);
 
       // Add user info to user table
       const db = store;
@@ -28,7 +29,9 @@ export const signUpUser = (email, password, callback, errorCallback) => {
         'photoURL': response.user.photoURL,
         'phoneNumber': response.user.phoneNumber,
         'emailVerified': response.user.emailVerified,
-        'provider': response.user.providerId
+        'provider': response.user.providerId,
+        'isLoggedIn': true,
+        'lastLogin': serverTimestamp()
       }
 
       await addDoc(collection(db, 'users'), userData);

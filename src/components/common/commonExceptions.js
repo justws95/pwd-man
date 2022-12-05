@@ -9,3 +9,9 @@ export class UserSecretNotFoundException extends Error {
     super(`${errMsg}`);
   }
 }
+
+export class DuplicateUserFoundException extends Error {
+  constructor(errMsg) {
+    super(`${errMsg}`);
+  }
+}
