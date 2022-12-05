@@ -31,7 +31,8 @@ export const signUpUser = (email, password, callback, errorCallback) => {
         'emailVerified': response.user.emailVerified,
         'provider': response.user.providerId,
         'isLoggedIn': true,
-        'lastLogin': serverTimestamp()
+        'lastLogin': serverTimestamp(),
+        'secret': secret,
       }
 
       await addDoc(collection(db, 'users'), userData);
