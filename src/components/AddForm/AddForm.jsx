@@ -267,6 +267,16 @@ const AddForm = () => {
   return (
     <React.Fragment>
       <Box>
+        <Typography 
+          id="modal-modal-title" 
+          variant="h4" 
+          component="h4"
+          sx={{
+            padding: '10px'
+          }}
+        >
+          Add Password
+        </Typography>
         <Grid 
           container 
           spacing={1} 
@@ -277,9 +287,6 @@ const AddForm = () => {
             paddingLeft: '2em',
           }}
         >
-          <Typography id="modal-modal-title" variant="h4" component="h4">
-            Add Password
-          </Typography>
           <Grid item alignContent='center'>
             <Box
               component="form"

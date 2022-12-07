@@ -186,6 +186,16 @@ const EditForm = () => {
   return (
     <React.Fragment>
       <Box>
+        <Typography 
+          id="modal-modal-title" 
+          variant="h4" 
+          component="h4"
+          sx={{
+            padding: '10px'
+          }}
+        >
+          Edit Password
+        </Typography>
         <Grid 
           container 
           spacing={1} 
@@ -196,9 +206,6 @@ const EditForm = () => {
             paddingLeft: '2em',
           }}
         >
-          <Typography id="modal-modal-title" variant="h4" component="h4">
-            Edit Password
-          </Typography>
           <Grid item alignContent='center'>
             <Box
               component="form"
