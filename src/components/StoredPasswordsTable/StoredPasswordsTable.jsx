@@ -6,7 +6,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-//import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';
@@ -115,13 +115,11 @@ const StoredPasswordsTable = () => {
     });
   }
 
-  /*
   const handlePwdEdit = (event, site) => {
     event.preventDefault();
     const entry = records.filter((r) => r.site === site)[0];
     navigate(`/edit?documentID=${entry.id}`);
   }
-  */
 
   const navigate = useNavigate();
 
@@ -168,9 +166,7 @@ const StoredPasswordsTable = () => {
                   <TableCell>User ID</TableCell>
                   <TableCell>Password</TableCell>
                   <TableCell align="center">Show Password?</TableCell>
-                  {/*
                   <TableCell align="center">Edit</TableCell>
-                  */}
                   <TableCell align="center">Delete?</TableCell>
                 </TableRow>
               </TableHead>
@@ -200,7 +196,6 @@ const StoredPasswordsTable = () => {
                         }
                       </IconButton>
                     </TableCell>
-                    {/*
                     <TableCell align="center">
                       <IconButton 
                         aria-label="edit-password"
@@ -209,7 +204,6 @@ const StoredPasswordsTable = () => {
                         <EditIcon />
                       </IconButton>
                     </TableCell>
-                    */}
                     <TableCell align="center">
                       <IconButton 
                         aria-label="delete"

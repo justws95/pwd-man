@@ -277,6 +277,9 @@ const AddForm = () => {
             paddingLeft: '2em',
           }}
         >
+          <Typography id="modal-modal-title" variant="h4" component="h4">
+            Add Password
+          </Typography>
           <Grid item alignContent='center'>
             <Box
               component="form"

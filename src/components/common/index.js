@@ -11,4 +11,4 @@ export {
   setAESsecret, 
   setUserLoginState 
 } from './userUtils';
-export { getStoredRecords  } from './recordUtils';
+export { getStoredRecords, getStoredRecord } from './recordUtils';
